@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -d "Otter" ]; then
+  hg pull -u -R Otter
+else
+  hg clone https://bitbucket.org/kylepulver/otter Otter
+fi
+
+git submodule init
+git submodule update
