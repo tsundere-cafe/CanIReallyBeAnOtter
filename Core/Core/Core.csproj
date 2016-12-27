@@ -41,8 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ResponseComponents\ButtonPressResponse.cs" />
+    <Compile Include="ResponseComponents\ButtonReleaseResponse.cs" />
+    <Compile Include="ResponseComponents\CollisionResponse.cs" />
+    <Compile Include="ResponseComponents\RestResponse.cs" />
+    <Compile Include="ResponseComponents\TickResponse.cs" />
+    <Compile Include="AnonymousResponses\WhenButtonPressed.cs" />
+    <Compile Include="AnonymousResponses\WhenButtonReleased.cs" />
+    <Compile Include="AnonymousResponses\WhenColliding.cs" />
+    <Compile Include="AnonymousResponses\WhenResting.cs" />
+    <Compile Include="AnonymousResponses\EveryTick.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="NoncomponentLoans\WithGraphicGUI.cs" />
+    <Compile Include="NoncomponentLoans\WithGraphic.cs" />
+    <Compile Include="NoncomponentLoans\WithCollider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateMachine\EntityState.cs" />
+    <Compile Include="StateMachine\EntityStateMachine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Otter\Otter\Otter.csproj">
