@@ -6,7 +6,6 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
   public class EntityState
   {
     Component[] components;
-    List<Graphic> graphics = new List<Graphic>();
 
     public EntityState(params Component[] components)
     {

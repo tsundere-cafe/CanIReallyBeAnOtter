@@ -25,6 +25,12 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
       return state;
     }
 
+    public EntityState Add(T stateIndex, params Component[] components)
+    {
+      var state = new EntityState(components);
+      return Add(stateIndex, state);
+    }
+
     public void ReplaceState(T stateIndex)
     {
       EntityState state = StateLookup[stateIndex];
