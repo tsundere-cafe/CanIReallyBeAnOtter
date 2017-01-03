@@ -1,6 +1,4 @@
 ﻿using Otter;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace CanIReallyBeAnOtter.Core.StateMachine
 {

@@ -12,7 +12,7 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
 
     readonly Dictionary<T, EntityState> StateLookup = new Dictionary<T, EntityState>();
 
-    public T ActiveState
+    public T State
     {
       get
       {
@@ -81,12 +81,14 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
 
     public void ReplaceAll(T stateIndex)
     {
-      var allOldComponets = States.SelectMany(_ => _.components).Distinct();
+      var allOldComponets = States.SelectMany(_ => _.components).Distinct().ToList();
       var newState = StateLookup[stateIndex];
 
       States.Clear();
       UpdateComponents(allOldComponets, newState.components);
       States.Push(newState);
+
+      Console.WriteLine("i'm transitioning: " + stateIndex);
     }
 
     public void PushState(T stateIndex)
