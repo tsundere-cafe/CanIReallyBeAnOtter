@@ -1,17 +1,36 @@
 ﻿using Otter;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace CanIReallyBeAnOtter.Core.StateMachine
 {
-  public class EntityStates<T> : Component, IEnumerable<KeyValuePair<T, EntityState>>
+  public class EntityStates<T> : Component
   {
     public readonly Stack<EntityState> States = new Stack<EntityState>();
 
     readonly Dictionary<T, EntityState> StateLookup = new Dictionary<T, EntityState>();
 
-    public EntityState ActiveState
+    public T ActiveState
+    {
+      get
+      {
+        var top = TopState;
+
+        foreach (var entry in StateLookup)
+        {
+          if (entry.Value == top)
+          {
+            return entry.Key;
+          }
+        }
+
+        throw new InvalidOperationException("Either no state is active or the active state wasn't registered to this state machine");
+      }
+    }
+
+    EntityState TopState
     {
       get
       {
@@ -25,60 +44,84 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
       return state;
     }
 
-    public EntityState Add(T stateIndex, params Component[] components)
+    void UpdateComponents(IEnumerable<Component> oldComponents, IEnumerable<Component> newComponents)
     {
-      var state = new EntityState(components);
-      return Add(stateIndex, state);
+      foreach (var component in oldComponents)
+      {
+        if (!newComponents.Contains(component))
+        {
+          Entity.RemoveComponent(component);
+        }
+      }
+
+      foreach (var component in newComponents)
+      {
+        if (!oldComponents.Contains(component))
+        {
+          Entity.AddComponent(component);
+        }
+      }
     }
 
     public void ReplaceState(T stateIndex)
     {
-      EntityState state = StateLookup[stateIndex];
-      if (ActiveState != null)
+      var newState = StateLookup[stateIndex];
+
+      if (TopState != null)
       {
-        ActiveState.Uninstall(Entity);
-        States.Pop();
+        PushState(stateIndex);
       }
-
-      States.Push(state);
-
-      ActiveState.Install(Entity);
+      else
+      {
+        var oldState = States.Pop();
+        UpdateComponents(oldState.components, newState.components);
+        States.Push(newState);
+      }
     }
 
     public void ReplaceAll(T stateIndex)
     {
-      while (ActiveState != null)
-      {
-        PopState();
-      }
+      var allOldComponets = States.SelectMany(_ => _.components).Distinct();
+      var newState = StateLookup[stateIndex];
 
-      PushState(stateIndex);
+      States.Clear();
+      UpdateComponents(allOldComponets, newState.components);
+      States.Push(newState);
     }
 
     public void PushState(T stateIndex)
     {
-      EntityState state = StateLookup[stateIndex];
-      if (ActiveState != null)
+      EntityState newState = StateLookup[stateIndex];
+      if (TopState == null)
       {
-        ActiveState.Uninstall(Entity);
+        Entity.AddComponents(newState.components);
+      }
+      else
+      {
+        var oldState = States.Pop();
+        UpdateComponents(oldState.components, newState.components);
       }
 
-      States.Push(state);
-
-      ActiveState.Install(Entity);
+      States.Push(newState);
     }
 
     public void PopState()
     {
-      if (ActiveState != null)
+      if (TopState != null)
       {
-        ActiveState.Uninstall(Entity);
-        States.Pop();
-      }
+        var oldState = States.Pop();
 
-      if (ActiveState != null)
-      {
-        ActiveState.Install(Entity);
+        if (TopState != null)
+        {
+          UpdateComponents(oldState.components, TopState.components);
+        }
+        else
+        {
+          foreach (var component in oldState.components)
+          {
+            Entity.RemoveComponent(component);
+          }
+        }
       }
     }
 
@@ -88,30 +131,27 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
     /// <param name="state"></param>
     public void PopState(T stateIndex)
     {
-      EntityState state = StateLookup[stateIndex];
-      if (States.Contains(state))
+      var newState = StateLookup[stateIndex];
+
+      if (States.Contains(newState))
       {
-        while (ActiveState != state)
+        var allOldComponets = new List<Component>();
+
+        while (TopState != newState)
         {
+          allOldComponets.AddRange(TopState.components);
           PopState();
         }
 
+        allOldComponets.AddRange(TopState.components);
         PopState();
+
+        UpdateComponents(allOldComponets, TopState.components);
       }
       else
       {
         throw new InvalidOperationException("Trying to pop a state that isn't on the stack.");
       }
-    }
-
-    public IEnumerator<KeyValuePair<T, EntityState>> GetEnumerator()
-    {
-      return StateLookup.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return StateLookup.GetEnumerator();
     }
   }
 }
