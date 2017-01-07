@@ -25,5 +25,10 @@ namespace CanIReallyBeAnOtter.Core.NoncomponentLoans
       base.Removed();
       Entity.RemoveCollider(collider);
     }
+
+    public static implicit operator T(WithCollider<T> loan)
+    {
+      return loan.collider;
+    }
   }
 }

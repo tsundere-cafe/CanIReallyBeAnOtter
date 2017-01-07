@@ -1,7 +1,6 @@
 ﻿using Otter;
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace CanIReallyBeAnOtter.Core.StateMachine
@@ -87,8 +86,6 @@ namespace CanIReallyBeAnOtter.Core.StateMachine
       States.Clear();
       UpdateComponents(allOldComponets, newState.components);
       States.Push(newState);
-
-      Console.WriteLine("i'm transitioning: " + stateIndex);
     }
 
     public void PushState(T stateIndex)

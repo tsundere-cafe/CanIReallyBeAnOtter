@@ -1,4 +1,5 @@
 ﻿using Otter;
+using System;
 
 namespace CanIReallyBeAnOtter.Core.ResponseComponents
 {
