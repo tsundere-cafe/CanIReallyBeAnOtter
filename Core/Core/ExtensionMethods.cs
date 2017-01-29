@@ -1,6 +1,7 @@
 ﻿using CanIReallyBeAnOtter.Core.NoncomponentLoans;
 using Otter;
 using System;
+using System.Collections;
 
 /// <summary>
 /// No namespace extension method is.....rude!!!!
@@ -35,5 +36,10 @@ public static class ExtensionMethods
   {
     configuration(thing);
     return thing;
+  }
+
+  public static int Run(this IEnumerator coroutine)
+  {
+    return Coroutine.Instance.Start(coroutine);
   }
 }

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnonymousResponses\WhenEntered.cs" />
+    <Compile Include="EffectEntity.cs" />
     <Compile Include="ResponseComponents\ButtonPressResponse.cs" />
     <Compile Include="ResponseComponents\ButtonReleaseResponse.cs" />
     <Compile Include="ResponseComponents\CollisionResponse.cs" />
