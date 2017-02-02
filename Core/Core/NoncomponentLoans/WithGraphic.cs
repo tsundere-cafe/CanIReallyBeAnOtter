@@ -7,17 +7,24 @@ namespace CanIReallyBeAnOtter.Core.NoncomponentLoans
   public class WithGraphic<T> : Component
     where T : Graphic
   {
-    public readonly T graphic;
+    public readonly Func<T> graphicGenerator;
+
+    T graphic;
 
     public WithGraphic(T graphic)
     {
-      this.graphic = graphic;
+      graphicGenerator = () => graphic;
+    }
+
+    public WithGraphic(Func<T> graphic)
+    {
+      graphicGenerator = graphic;
     }
 
     public override void Added()
     {
       base.Added();
-      Entity.AddGraphic(graphic);
+      graphic = Entity.AddGraphic(graphicGenerator());
     }
 
     public override void Removed()
