@@ -2,6 +2,8 @@
 using Otter;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 /// <summary>
 /// No namespace extension method is.....rude!!!!
