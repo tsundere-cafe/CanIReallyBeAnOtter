@@ -42,4 +42,24 @@ public static class ExtensionMethods
   {
     return Coroutine.Instance.Start(coroutine);
   }
+
+  public static string JoinString<T>(this IEnumerable<T> collection, string joinWith = ", ")
+  {
+    if (collection.IsEmpty())
+    {
+      return "";
+    }
+    else
+    {
+      var result = new StringBuilder();
+
+      foreach (var thing in collection)
+      {
+        result.Append(thing.ToString());
+        result.Append(joinWith);
+      }
+
+      return result.Remove(result.Length - joinWith.Length, joinWith.Length).ToString();
+    }
+  }
 }
