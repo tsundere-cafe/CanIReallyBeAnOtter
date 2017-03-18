@@ -9,9 +9,23 @@ namespace CanIReallyBeAnOtter.Core.NoncomponentLoans
   {
     public readonly T collider;
 
+    float disabledUntil;
+
     public WithCollider(T collider)
     {
       this.collider = collider;
+    }
+
+    public void DisableFor(float frames)
+    {
+      disabledUntil = Math.Max(disabledUntil, Timer + frames);
+    }
+
+    public override void Update()
+    {
+      base.Update();
+
+      collider.Collidable = disabledUntil < Timer;
     }
 
     public override void Added()
