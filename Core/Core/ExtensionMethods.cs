@@ -1,9 +1,6 @@
-﻿using CanIReallyBeAnOtter.Core.NoncomponentLoans;
-using Otter;
+﻿using Otter;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 /// <summary>
 /// No namespace extension method is.....rude!!!!
@@ -40,28 +37,22 @@ public static class ExtensionMethods
     return thing;
   }
 
-  public static int Run(this IEnumerator coroutine)
+  public static int Run(this IEnumerator coroutine, Scene context)
   {
-    return Coroutine.Instance.Start(coroutine);
+    var id = RunForever(coroutine);
+    context.OnEnd += () => Coroutine.Instance.Stop(id);
+    return id;
   }
 
-  public static string JoinString<T>(this IEnumerable<T> collection, string joinWith = ", ")
+  public static int Run(this IEnumerator coroutine, Entity context)
   {
-    if (collection.IsEmpty())
-    {
-      return "";
-    }
-    else
-    {
-      var result = new StringBuilder();
+    var id = RunForever(coroutine);
+    context.OnRemoved += () => Coroutine.Instance.Stop(id);
+    return id;
+  }
 
-      foreach (var thing in collection)
-      {
-        result.Append(thing.ToString());
-        result.Append(joinWith);
-      }
-
-      return result.Remove(result.Length - joinWith.Length, joinWith.Length).ToString();
-    }
+  public static int RunForever(this IEnumerator coroutine)
+  {
+    return Coroutine.Instance.Start(coroutine);
   }
 }
